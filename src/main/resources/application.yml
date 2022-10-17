@@ -1,0 +1,26 @@
+spring:
+  main:
+    banner-mode: "OFF"
+  profiles:
+    active: dev
+
+server:
+  port: 8000
+  compression:
+    enabled: true
+    mime-types: application/json
+
+application:
+  serviceName: "camel-demo-adv2022"
+
+camel:
+  component:
+    kafka:
+      group-id: "{{application.serviceName}}"
+      brokers: "localhost:9094"
+      header-serializer: org.apache.kafka.common.serialization.StringSerializer
+      header-deserializer: "#advKafkaHeaderDeserializer"
+      header-filter-strategy: "#advKafkaHeadersFilter"
+  language:
+    jsonpath:
+      write-as-string: true

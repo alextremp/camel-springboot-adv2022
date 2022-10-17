@@ -1,0 +1,39 @@
+version: '3.5'
+
+services:
+
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    environment:
+      - KAFKA_ADVERTISED_LISTENERS=INSIDE://:9092,OUTSIDE://localhost:9094
+      - KAFKA_LISTENERS=INSIDE://:9092,OUTSIDE://:9094
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=INSIDE
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_BROKER_ID=0
+      - KAFKA_AUTO_LEADER_REBALANCE_ENABLE=false
+      - KAFKA_CREATE_TOPICS="\
+          priv.cameldemo.sample03.inbox:1:1,priv.cameldemo.sample03.item:1:1,priv.cameldemo.sample03.outbox:1:1\
+          ,priv.cameldemo.sample04.inbox:1:1,priv.cameldemo.sample04.item:1:1,priv.cameldemo.sample04.outbox:1:1\
+          ,priv.cameldemo.sample05.inbox:1:1,priv.cameldemo.sample05.item:1:1,priv.cameldemo.sample05.outbox:1:1"
+    ports:
+      - "9094:9094"
+    links:
+      - zookeeper
+
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+      - "2181:2181"
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:0.3.3
+    ports:
+      - 8280:8080
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+    links:
+      - kafka
+      - zookeeper
