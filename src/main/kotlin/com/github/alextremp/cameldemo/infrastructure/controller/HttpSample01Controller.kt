@@ -1,5 +1,7 @@
 package com.github.alextremp.cameldemo.infrastructure.controller
 
+import com.github.alextremp.cameldemo.domain.sample.SampleItemAddRequest
+import com.github.alextremp.cameldemo.domain.shared.CollectionData
 import org.apache.camel.ProducerTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PostMapping
@@ -14,15 +16,15 @@ class HttpSample01Controller(
   private val producerTemplate: ProducerTemplate
 ) {
 
-  @PostMapping("/filter")
+  @PostMapping
   @ResponseStatus(HttpStatus.ACCEPTED)
-  fun postSingleData(@RequestBody request: String) {
-    producerTemplate.asyncSendBody("direct:sample01-filter", request)
+  fun postSingleData(@RequestBody request: SampleItemAddRequest) {
+    producerTemplate.asyncSendBody("direct:sample01-single", request)
   }
 
   @PostMapping("/bulk")
   @ResponseStatus(HttpStatus.ACCEPTED)
-  fun postListOfData(@RequestBody request: String) {
-    producerTemplate.asyncSendBody("direct:sample02-list", request)
+  fun postListOfData(@RequestBody request: CollectionData<SampleItemAddRequest>) {
+    producerTemplate.asyncSendBody("direct:sample01-list", request)
   }
 }
