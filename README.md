@@ -21,6 +21,8 @@ docker-compose up
 
 ./gradlew bootRun
 ```
+
+For Kafka samples, topis are able for revision in [local Kafka UI](http://localhost:8280/ui/clusters/local/topics) 
  
 Posting data to the samples:
 
