@@ -11,14 +11,20 @@ class Sample02: RouteBuilder() {
 
   override fun configure() {
 
-    from("direct:sample02-single")
-      .routeId("sample02-single")
-      .log("received <<\${body}>>")
-
-    from("direct:sample02-list")
-      .routeId("sample02-list")
-      .log("received <<\${body}>>")
+    from("direct:sample02-filter")
+      .routeId("sample02-filter")
       .split().jsonpath("$.data[*]").parallelProcessing()
-      .to("direct:sample02-single")
+      .log("splitted|\${body}")
+      .filter(simple("\${body} contains 'yyy'")).to("direct:sample02-filtered").stop().end()
+      .filter().simple("\${body} contains 'xxx'").to("direct:sample02-filtered").end()
+      .to("direct:sample02-all")
+
+    from("direct:sample02-filtered")
+      .routeId("sample02-filtered")
+      .log("filtered|\${body}")
+
+    from("direct:sample02-all")
+      .routeId("sample02-all")
+      .log("all|\${body}")
   }
 }
